@@ -1,0 +1,39 @@
+Para instalar este bot siga los siguientes pasos:
+1- Primero que todo debes haber cogido ejecutado
+el archivo install.sh ya?
+
+Si es asi continuemos, si no ejecutalo,
+
+2- Cambiemos unas cosas:
+A- Hay que añadirle tu url de friendica al include.py
+de la siguiente forma:
+
+friendica_u='https://miurl.com/'
+
+B- Hay que añadirle la presentacion que debe
+devolver al escribir /start:
+
+welcome={
+'es':'Mi presentacion',
+'en':'My presentation'
+}
+
+C- Añadir tu chat_id, para esto necesitas ir a
+telegram y escribir cualquier cosa al bot:
+
+@PyrogramJSON_bot
+
+y cojer este numero:
+
+"id" : Numero
+
+y establecerlo asi en el include.py
+admin_id=Numero_que_copiamos
+
+D- Crear un bot con @BotFather
+
+El tutorial deben buscarlo por ustedes para no
+alargar mas esto. Y cuando tengan el token ponerlo
+en include.py asi:
+
+token=eltoken
