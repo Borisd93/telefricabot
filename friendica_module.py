@@ -54,7 +54,7 @@ def log_friend(update: Update, context: CallbackContext) -> None:
 		update.message.reply_text(return_string('log_s_f',lang))
 	else:
 		try:
-			friend=api.FriendApi("https://friendicarg.nsupdate.info/",context.args[0],context.args[1])
+			friend=api.FriendApi(friendica_u,context.args[0],context.args[1])
 			crud.connect("friend_users.db")
 			if len(crud.read("users","telegram",update.message.chat_id))==0:
 				crud.create("users","'"+str(update.message.chat_id)+"','"+context.args[0]+"','"+context.args[1]+"'")
@@ -95,7 +95,7 @@ def publish(update: Update, context: CallbackContext) -> None:
 		try:
 			if '-' in str(update.message.chat_id):
 				print('LOGGING DEBUG: RUNNING IN A GROUP, if this work please remove the line 93 of the code')
-				friend=api.FriendApi("https://friendicarg.nsupdate.info/",r[0][1],r[0][2])
+				friend=api.FriendApi(friendica_u,r[0][1],r[0][2])
 				contexto=update.message.text
 				rex=re.findall("#!.*!#",contexto)
 				if rex:
@@ -131,7 +131,7 @@ def publish(update: Update, context: CallbackContext) -> None:
 					contexto=contexto.replace(i,'')
 				update.reply_text(rex.replace('#!','').replace('!#','')+'\n'+contexto.replace(rex,''))
 			else:
-				friend=api.FriendApi("https://friendicarg.nsupdate.info/",r[0][1],r[0][2])
+				friend=api.FriendApi(friendica_u,r[0][1],r[0][2])
 				contexto=update.message.text
 				rex=re.findall("#!.*!#",contexto)
 				if rex:
