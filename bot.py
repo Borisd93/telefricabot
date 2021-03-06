@@ -12,8 +12,6 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update,ReplyMar
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext, MessageHandler, Filters, CallbackContext
 #Importandk Friendica
 from friendica_module import log_friend,logout_friend,publish
-#Importando cosas del server reisub en general
-from bin_module import paste,imagebin
 #Importando la base
 import requests,io,random,re,api,crud,datetime,time,telegram
 from os import remove
@@ -109,7 +107,10 @@ def start(update:Update, context: CallbackContext) -> None:
 		lan.close()
 	except:
 		lang='es'
-	update.message.reply_text(return_string('welcome',welcome))
+	try:
+		update.message.reply_text(welcome[lang])
+	except:
+		update.message.reply_text(welcome['es'])
 
 def sugerir(update:Update, context: CallbackContext) -> None:
 	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
