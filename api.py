@@ -32,5 +32,3 @@ class FriendApi():
 	def logout(self):
 		self.session.get("https://friendicarg.nsupdate.info/logout",headers=HEADERS)
 
-
-f=FriendApi("https://friendicarg.nsupdate.info/","x93","balbinotA13.")
