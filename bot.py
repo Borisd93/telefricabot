@@ -11,7 +11,7 @@ except:
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update,ReplyMarkup,Bot,user
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext, MessageHandler, Filters, CallbackContext
 #Importandk Friendica
-from friendica_module import log_friend,logout_friend,publish
+from friendica_module import log_friend,logout_friend,publish,notifications
 #Importando la base
 import requests,io,random,re,api,crud,datetime,time,telegram
 from os import remove
@@ -158,6 +158,7 @@ if __name__=='__main__':
 	dispatcher.add_handler(CommandHandler('publish', publish))
 	dispatcher.add_handler(CommandHandler('help',help))
 	dispatcher.add_handler(CommandHandler('set',set))
+	dispatcher.add_handler(CommandHandler('notifications',notifications))
 
 	updater.start_polling()
 	updater.idle()

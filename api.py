@@ -1,4 +1,4 @@
-import requests,io,random
+import requests,io,random,re
 
 ua = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:60.0) Gecko/20100101'
 ua += ' Firefox/60.0'
@@ -27,8 +27,15 @@ class FriendApi():
 			print('API')
 			raise ValueError('Error con la contraseña o usuario')
 		print(r.json,r.text,'gere')
-	def html_network(self):
-		return self.session.get("https://friendicarg.nsupdate.info/network",headers=HEADERS)
-	def logout(self):
-		self.session.get("https://friendicarg.nsupdate.info/logout",headers=HEADERS)
+	def notifications(self,limit):
+		r=self.session.get(self.url+'/notifications/system',headers=HEADERS)
+		cont=0
+		out=''
+		for i in re.findall('https://friendicarg.nsupdate.info/notification/.*',r.text):
+			cont=cont+1
+			if cont-1==limit:
+				break
+			else:
+				out=out+'\n'+'\n'+i.replace(re.findall('"><img src=".*" aria-hidden="true" class="notif-image">',i)[0],' ').replace('<span class="notif-when">','').replace('</span></a>','')
+		return out
 

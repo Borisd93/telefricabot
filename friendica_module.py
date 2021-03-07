@@ -6,8 +6,9 @@ name='Reisub-Bot -> Friendicarg'
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update,ReplyMarkup,Bot,user
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext, MessageHandler, Filters, CallbackContext
+from include import friendica_u,token
 import api,crud,re,io,telegram
-from include import token
+
 bot=Bot(token)
 es={'pub':'Publicado con exito 😉',
 'not_l_f':'Usted no esta logueado 😭',
@@ -16,8 +17,8 @@ es={'pub':'Publicado con exito 😉',
 'usd_l_f':'Usuario eliminado 😭',
 'usl_l_f':'Su usuario ya esta registrado 😎, para eliminarlo mande el comando /logout_f',
 'usu_l_f':'El usuario o la contraseña esta mal,por favor enviame de nuevo el comando con el usuario y la contraseña',
-'log_s_f':'usa esta sintaxis:\n/login_f Usuario contraseña'}
-
+'log_s_f':'usa esta sintaxis:\n/login_f Usuario contraseña',
+'cls_l_f':'Tu publicación es muy pequeña o no tiene contenido'}
 en={'pub':'Sucess!',
 'not_l_f':'You not are logged in 😭',
 'cha_l_f':'You password is incorrect 😧',
@@ -30,7 +31,8 @@ en={'pub':'Sucess!',
 'suge':'This user: {} send a sugestion: {}',
 'urown':'Please give me a link',
 'urow1':'The link was created',
-'log_s_f':'Use this sintax:\n/login_f user password'}
+'log_s_f':'Use this sintax:\n/login_f user password',
+'cls_l_f':'Your publication is clear or very short'}
 
 def return_string(string,lang):
 	if "es" in lang:
@@ -161,3 +163,19 @@ def publish(update: Update, context: CallbackContext) -> None:
 			update.message.reply_text(return_string('cha_l_f',lang))
 	else:
 		update.message.reply_text(return_string('not_l_f',lang))
+def notifications(update:Update,context:CallbackContext):
+	try:
+		lan=io.open(update.effective_user.username,"r")
+		lang=lan.read()
+		lan.close()
+	except:
+		lang="es"
+	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
+	crud.connect("friend_users.db")
+	r=crud.read("users","telegram",update.message.chat_id)
+	if len(r)==1:
+		friend=api.FriendApi(friendica_u,r[0][1],r[0][2])
+		update.message.reply_text(friend.notifications(5))
+	else:
+		update.message.reply_text(return_string('not_l_f',lang))
+
