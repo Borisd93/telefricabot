@@ -50,7 +50,6 @@ def log_friend(update: Update, context: CallbackContext) -> None:
 	except:
 		lang="es"
 	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
-	context.bot.delete_message(chat_id = update.message.chat_id, message_id = update.message.message_id)
 	print(context.args)
 	if len(context.args)<=1:
 		update.message.reply_text(return_string('log_s_f',lang))
@@ -66,6 +65,8 @@ def log_friend(update: Update, context: CallbackContext) -> None:
 			crud.save();crud.close()
 		except ValueError:
 			update.message.reply_text(return_string('usu_l_f',lang))
+	context.bot.delete_message(chat_id = update.message.chat_id, message_id = update.message.message_id)
+
 def logout_friend(update: Update, context: CallbackContext) -> None:
 	try:
 		lan=io.open(update.effective_user.username,"r")
@@ -122,16 +123,8 @@ def publish(update: Update, context: CallbackContext) -> None:
 					contexto.replace("!hora!",horavar).replace("!horacu!",horacuvar)
 					rex.replace("!hora!",horavar)
 				friend.share(rex,contexto.replace(rex,'').replace('/publish','')+"\n#telegram")
+				update.message.reply_text(rex+'\n'+contexto.replace('/publish@reisub_bot','').replace('/publish ','').replace('#!'+rex+'!#',''))
 				context.bot.delete_message(chat_id = update.message.chat_id, message_id = update.message.message_id)
-				r_q=re.findall('[attachment.*][/attachment]')
-				for i in r_q:
-					rex=rex.replace(i,'')
-					contexto=contexto.replace(i,'')
-				r_q=re.findall('[img.*][/img]')
-				for i in r_q:
-					rex=rex.replace(i,'')
-					contexto=contexto.replace(i,'')
-				update.reply_text(rex.replace('#!','').replace('!#','')+'\n'+contexto.replace(rex,''))
 			else:
 				friend=api.FriendApi(friendica_u,r[0][1],r[0][2])
 				contexto=update.message.text
