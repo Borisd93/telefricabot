@@ -1,4 +1,4 @@
-
+from html2text import html2text
 import requests,io,random,re
 
 ua = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:60.0) Gecko/20100101'
@@ -44,13 +44,9 @@ class FriendApi():
 		exp=re.findall('<div class="wall-item-body e-content p-name">.*</div>',texto)
 		exp1=re.findall('"display/.*"',texto)
 		out=[]
-		for i in re.findall('<a href=".*" class="tag" title=".*">',texto):
-			texto=texto.replace(i,'')
-		for i in re.findall('<img src=".*" alt=".*" title=".*">',texto):
-			texto.replace(i,'')
 		for i in range(0,limit):
 			try:
-				out.append(exp[i].replace('</a>','').replace('</div>','').replace('<div class="wall-item-body e-content p-name">','').replace('<br>','')+'\n'+self.url+exp1[i].replace('"','').replace('><i class=icon-link icon-large><span class=ser-only','')+'\n\n')
+				out.append(html2text(exp[i])+'\n'+self.url+exp1[i].replace('"','').replace('> _< span class=sr-only','')+'\n\n')
 			except:
 				break
 		return out
