@@ -50,7 +50,6 @@ def log_friend(update: Update, context: CallbackContext) -> None:
 	except:
 		lang="es"
 	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
-	print(context.args)
 	if len(context.args)<=1:
 		update.message.reply_text(return_string('log_s_f',lang))
 	else:
@@ -91,13 +90,11 @@ def publish(update: Update, context: CallbackContext) -> None:
 	except:
 		lang="es"
 	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
-	print(lang)
 	crud.connect("friend_users.db")
 	r=crud.read("users","telegram",update.message.chat_id)
 	if len(r)==1:
 		try:
 			if '-' in str(update.message.chat_id):
-				print('LOGGING DEBUG: RUNNING IN A GROUP, if this work please remove the line 93 of the code')
 				friend=api.FriendApi(friendica_u,r[0][1],r[0][2])
 				contexto=update.message.text
 				rex=re.findall("#!.*!#",contexto)
