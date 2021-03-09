@@ -12,6 +12,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update,ReplyMar
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext, MessageHandler, Filters, CallbackContext
 #Importandk Friendica
 from friendica_module import log_friend,logout_friend,publish,notifications
+#Importando Uptime
+from uptime_module import uptime
 #Importando la base
 import requests,io,random,re,api,crud,datetime,time,telegram
 from os import remove
@@ -22,6 +24,14 @@ def typing(chat):
 ua = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:60.0) Gecko/20100101'
 ua += ' Firefox/60.0'
 HEADERS = {'user-agent': ua}
+help1=''
+def log_function(dispatcher,name,function1):
+	global help1
+	dispatcher.add_handler(CommandHandler(name,function1)) 
+	try:
+		help1=help1+str('/'+name)+' -> '+function1.__doc__+'\n\n'
+	except:
+		help1=help1+str('/'+name)+' -> Not documented\n\n'
 
 #Idioma español
 es={'help':'''/start - Inicia el bot
@@ -100,6 +110,7 @@ except:
 bot=Bot(token)
 
 def start(update:Update, context: CallbackContext) -> None:
+	"""Inicia el Bot"""
 	typing(update.message.chat_id)
 	try:
 		lan=io.open(update.effective_user.username,"r")
@@ -113,6 +124,7 @@ def start(update:Update, context: CallbackContext) -> None:
 		update.message.reply_text(welcome['es'])
 
 def sugerir(update:Update, context: CallbackContext) -> None:
+	"""Sugiere que aladan algo o mejoren algo"""
 	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
 	try:
 		lan=io.open(update.effective_user.username,"r")
@@ -124,14 +136,8 @@ def sugerir(update:Update, context: CallbackContext) -> None:
 	update.reply_text(return_string('finish',))
 
 def help(update:Update, context: CallbackContext) -> None:
-	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
-	try:
-		lan=io.open(update.effective_user.username,"r")
-		lang=lang.read()
-		lan.close()
-	except:
-		lang="es"
-	update.message.reply_text(return_string('help',lang))
+	"""Devuelve esta ayuda"""
+	update.message.reply_text(help1)
 
 
 def set(update:Update, context: CallbackContext) -> None:
@@ -151,15 +157,15 @@ def set(update:Update, context: CallbackContext) -> None:
 if __name__=='__main__':
 	updater=Updater(token=token)
 	dispatcher=updater.dispatcher
-	dispatcher.add_handler(CommandHandler('start', start))
-	dispatcher.add_handler(CommandHandler('sugerencia', sugerir))
-	dispatcher.add_handler(CommandHandler('login_f', log_friend))
-	dispatcher.add_handler(CommandHandler('logout_f', logout_friend))
-	dispatcher.add_handler(CommandHandler('publish', publish))
-	dispatcher.add_handler(CommandHandler('help',help))
-	dispatcher.add_handler(CommandHandler('set',set))
-	dispatcher.add_handler(CommandHandler('notifications',notifications))
-
+	log_function(dispatcher,'start', start)
+	log_function(dispatcher,'sugerencia', sugerir)
+	log_function(dispatcher,'login_f', log_friend)
+	log_function(dispatcher,'logout_f', logout_friend)
+	log_function(dispatcher,'publish', publish)
+	log_function(dispatcher,'help',help)
+	log_function(dispatcher,'set',set)
+	log_function(dispatcher,'notifications',notifications)
+	log_function(dispatcher,'uptime',uptime)
 	updater.start_polling()
 	updater.idle()
 

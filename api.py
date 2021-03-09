@@ -1,3 +1,4 @@
+from html2text import html2text
 import requests,io,random,re
 
 ua = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:60.0) Gecko/20100101'
@@ -38,4 +39,14 @@ class FriendApi():
 			else:
 				out=out+'\n'+'\n'+i.replace(re.findall('"><img src=".*" aria-hidden="true" class="notif-image">',i)[0],' ').replace('<span class="notif-when">','').replace('</span></a>','')
 		return out
-
+	def network(self,limit):
+		texto=self.session.get('https://friendicarg.nsupdate.info/network').text
+		exp=re.findall('<div class="wall-item-body e-content p-name">.*</div>',texto)
+		exp1=re.findall('"display/.*"',texto)
+		out=[]
+		for i in range(0,limit):
+			try:
+				out.append(html2text(exp[i])+'\n'+self.url+exp1[i].replace('"','').replace('> _< span class=sr-only','')+'\n\n')
+			except:
+				break
+		return out
