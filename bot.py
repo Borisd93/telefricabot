@@ -23,6 +23,9 @@ ua = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:60.0) Gecko/20100101'
 ua += ' Firefox/60.0'
 HEADERS = {'user-agent': ua}
 
+def log_function(dispatcher,function,name):
+	dispatcher.add_handler(CommandHandler(name,function))
+	help=help+name+' -> '+function.__doc__+'\n'
 #Idioma español
 es={'help':'''/start - Inicia el bot
 
@@ -100,6 +103,7 @@ except:
 bot=Bot(token)
 
 def start(update:Update, context: CallbackContext) -> None:
+	"""Inicia el Bot"""
 	typing(update.message.chat_id)
 	try:
 		lan=io.open(update.effective_user.username,"r")
@@ -113,6 +117,7 @@ def start(update:Update, context: CallbackContext) -> None:
 		update.message.reply_text(welcome['es'])
 
 def sugerir(update:Update, context: CallbackContext) -> None:
+	"""Sugiere que aladan algo o mejoren algo"""
 	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
 	try:
 		lan=io.open(update.effective_user.username,"r")
@@ -124,6 +129,7 @@ def sugerir(update:Update, context: CallbackContext) -> None:
 	update.reply_text(return_string('finish',))
 
 def help(update:Update, context: CallbackContext) -> None:
+	"""Devuelve esta ayuda"""
 	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
 	try:
 		lan=io.open(update.effective_user.username,"r")
@@ -135,6 +141,7 @@ def help(update:Update, context: CallbackContext) -> None:
 
 
 def set(update:Update, context: CallbackContext) -> None:
+	"""Establece alguna configuraciones"""
 	if update.message.text.replace("/set ","").split(" ")[0]=="language":
 		if "en" in update.message.text.replace("/set ","").split(" "):
 			f=io.open(update.effective_user.username,"w")
@@ -151,14 +158,14 @@ def set(update:Update, context: CallbackContext) -> None:
 if __name__=='__main__':
 	updater=Updater(token=token)
 	dispatcher=updater.dispatcher
-	dispatcher.add_handler(CommandHandler('start', start))
-	dispatcher.add_handler(CommandHandler('sugerencia', sugerir))
-	dispatcher.add_handler(CommandHandler('login_f', log_friend))
-	dispatcher.add_handler(CommandHandler('logout_f', logout_friend))
-	dispatcher.add_handler(CommandHandler('publish', publish))
-	dispatcher.add_handler(CommandHandler('help',help))
-	dispatcher.add_handler(CommandHandler('set',set))
-	dispatcher.add_handler(CommandHandler('notifications',notifications))
+	log_function(dispatcher,'start', start)
+	log_function(dispatcher,'sugerencia', sugerir)
+	log_function(dispatcher,'login_f', log_friend)
+	log_function(dispatcher,'logout_f', logout_friend)
+	log_function(dispatcher,'publish', publish)
+	log_function(dispatcher,'help',help)
+	log_function(dispatcher,'set',set)
+	log_function(dispatcher,'notifications',notifications)
 
 	updater.start_polling()
 	updater.idle()

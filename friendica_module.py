@@ -43,13 +43,14 @@ def return_string(string,lang):
 		return es[string]
 
 def log_friend(update: Update, context: CallbackContext) -> None:
+	"""Permite el logueo en tu instancia de friendica"""
 	try:
 		lan=io.open(update.effective_user.username,"r")
 		lang=lan.read()
 		lan.close()
 	except:
 		lang="es"
-	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
+	context.bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
 	print(context.args)
 	if len(context.args)<=1:
 		update.message.reply_text(return_string('log_s_f',lang))
@@ -65,16 +66,17 @@ def log_friend(update: Update, context: CallbackContext) -> None:
 			crud.save();crud.close()
 		except ValueError:
 			update.message.reply_text(return_string('usu_l_f',lang))
-	context.bot.delete_message(chat_id = update.message.chat_id, message_id = update.message.message_id)
+	context.context.bot.delete_message(chat_id = update.message.chat_id, message_id = update.message.message_id)
 
 def logout_friend(update: Update, context: CallbackContext) -> None:
+	"""Borra la cuenta de tu instancia de friendica"""
 	try:
 		lan=io.open(update.effective_user.username,"r")
 		lang=lan.read()
 		lan.close()
 	except:
 		lang="es"
-	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
+	context.bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
 	crud.connect("friend_users.db")
 	if len(crud.read("users","telegram",update.message.chat_id))==1:
 		crud.delete("users","telegram",str(update.message.chat_id))
@@ -84,13 +86,14 @@ def logout_friend(update: Update, context: CallbackContext) -> None:
 	else:
 		update.message.reply_text(return_string('not_l_f',lang))
 def publish(update: Update, context: CallbackContext) -> None:
+	"""Publica en tu cuenta, requiere estar logueado"""
 	try:
 		lan=io.open(update.effective_user.username,"r")
 		lang=lan.read()
 		lan.close()
 	except:
 		lang="es"
-	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
+	context.bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
 	print(lang)
 	crud.connect("friend_users.db")
 	r=crud.read("users","telegram",update.message.chat_id)
@@ -124,7 +127,7 @@ def publish(update: Update, context: CallbackContext) -> None:
 					rex.replace("!hora!",horavar)
 				friend.share(rex,contexto.replace(rex,'').replace('/publish','')+"\n#telegram")
 				update.message.reply_text(rex+'\n'+contexto.replace('/publish@reisub_bot','').replace('/publish ','').replace('#!'+rex+'!#',''))
-				context.bot.delete_message(chat_id = update.message.chat_id, message_id = update.message.message_id)
+				context.context.bot.delete_message(chat_id = update.message.chat_id, message_id = update.message.message_id)
 			else:
 				friend=api.FriendApi("https://friendicarg.nsupdate.info/",r[0][1],r[0][2])
 				contexto=update.message.text
@@ -157,13 +160,14 @@ def publish(update: Update, context: CallbackContext) -> None:
 	else:
 		update.message.reply_text(return_string('not_l_f',lang))
 def notifications(update:Update,context:CallbackContext):
+	"""Devuelve las notificaciones de tu cuenta"""
 	try:
 		lan=io.open(update.effective_user.username,"r")
 		lang=lan.read()
 		lan.close()
 	except:
 		lang="es"
-	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
+	context.bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
 	crud.connect("friend_users.db")
 	r=crud.read("users","telegram",update.message.chat_id)
 	if len(r)==1:
@@ -173,13 +177,14 @@ def notifications(update:Update,context:CallbackContext):
 		update.message.reply_text(return_string('not_l_f',lang))
 
 def get_5(update:Update,context:CallbackContext):
+	"""Devuelve los ultimos 5 posts del apartado network"""
 	try:
 		lan=io.open(update.effective_user.username,"r")
 		lang=lan.read()
 		lan.close()
 	except:
 		lang="es"
-	bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
+	context.bot.send_chat_action(chat_id=update.message.chat_id, action=telegram.ChatAction.TYPING)
 	crud.connect("friend_users.db")
 	r=crud.read("users","telegram",update.message.chat_id)
 	if len(r)==1:
